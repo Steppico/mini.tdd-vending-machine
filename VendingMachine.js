@@ -6,7 +6,14 @@
 */
 const juice = { name: `Apple Juice`, price: 350, count: 5 };
 const coffee = { name: "Tully's", price: 250, count: 7 };
-const inventory = [[juice, coffee]];
+const coke = { name: "Coca-Cola", price: 150, count: 0 };
+// const bento = {
+//   name: "FamiMa's Bento (now with more anchovies)",
+//   price: 800,
+//   count: 3,
+// };
+
+const inventory = [[juice, coffee, coke]];
 
 class VendingMachine {
   constructor(balance = 0) {
@@ -18,21 +25,15 @@ class VendingMachine {
       500: 50,
     };
     this._selectedRow = "";
-    // 0 is the default value
     this._selectedCol = 0;
   }
-  /* Assumes a single coin is inserted*/
   insertCoin(coin) {
-    this.till[coin]++;
-    this.balance += coin;
-    // console.log(this._balance);
-  }
-
-  set balance(coin) {
-    this._balance = coin;
-  }
-  get balance() {
-    return this._balance;
+    if (coin === 10 || coin === 50 || coin === 100 || coin === 500) {
+      this.till[coin]++;
+      this.balance += coin;
+    } else {
+      return "Not a valid coin. Rejected.";
+    }
   }
   pressButton(letter) {
     if (letter === "A" || letter === "B" || letter === "C" || letter === "D") {
@@ -40,8 +41,14 @@ class VendingMachine {
     } else if (letter === 1 || letter === 2 || letter === 3 || letter === 4) {
       this._selectedCol = letter;
     } else {
-      console.error("Please select a valid letter.");
+      return "Please select a valid letter.";
     }
+  }
+  set balance(coin) {
+    this._balance = coin;
+  }
+  get balance() {
+    return this._balance;
   }
   get selectedRow() {
     return this._selectedRow;
@@ -51,6 +58,9 @@ class VendingMachine {
   }
   output() {
     let row = 0;
+    let col = this.selectedColumn - 1;
+    let item = inventory[row][col];
+
     switch (this.selectedRow) {
       case "A":
         row = 0;
@@ -65,10 +75,17 @@ class VendingMachine {
         row = 3;
         break;
     }
-    let col = this.selectedColumn - 1;
-    inventory[row][col].count--;
-    this.balance -= inventory[row][col].price;
-    return inventory[row][col].name;
+    if (item === undefined) {
+      return "no item at this column.";
+    } else if (this.balance < item.price) {
+      return "Insufficient funds.";
+    } else if (item.count <= 0) {
+      return "Item terminated! Select another one.";
+    } else {
+      item.count--;
+      this.balance -= item.price;
+      return item.name;
+    }
   }
   change() {
     let result = {};
