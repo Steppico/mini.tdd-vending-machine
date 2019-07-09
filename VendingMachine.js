@@ -7,11 +7,6 @@
 const juice = { name: `Apple Juice`, price: 350, count: 5 };
 const coffee = { name: "Tully's", price: 250, count: 7 };
 const coke = { name: "Coca-Cola", price: 150, count: 0 };
-// const bento = {
-//   name: "FamiMa's Bento (now with more anchovies)",
-//   price: 800,
-//   count: 3,
-// };
 
 const inventory = [[juice, coffee, coke]];
 
